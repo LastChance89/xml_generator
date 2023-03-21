@@ -2,9 +2,18 @@ from reader import file_utilities
 from account.account import Account
 import concurrent.futures
 import os
+import configparser
+import shutil
 
-output_path = "C:\\Users\ksmit\\PycharmProjects\\xmlgenerator\\xmlFIles\\xmloutput"
-input_path = "C:\\Users\\ksmit\\PycharmProjects\\xmlgenerator\\xmlFIles"
+
+def configure_paths():
+    config = configparser.ConfigParser()
+    config.read('configuration.cfg')
+
+    global output_path, input_path
+    output_path= config['file']['output_path']
+    input_path = config['file']['input_path']
+
 
 
 def read_file_contents(file_content, counter):
@@ -18,11 +27,16 @@ def read_file_contents(file_content, counter):
 
 
 if __name__ == '__main__':
-    os.remove(output_path)
-    if not os.path.exists:
-        os.makedirs(output_path)
+    configure_paths()
 
-    os.chdir("C:\\Users\\ksmit\\PycharmProjects\\xmlgenerator\\xmlFIles")
+    if os.path.exists(output_path):
+        try:
+            shutil.rmtree(output_path)
+            os.makedirs(output_path)
+        except Exception as e:
+            print(e)
+
+    os.chdir(input_path)
     thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
     counter = 0
     for file in os.listdir():
