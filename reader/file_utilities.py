@@ -1,16 +1,36 @@
-import xml.etree.ElementTree as tree
-import xml.dom.minidom
+from xml.dom import minidom
 
 def write_xml_file(accounts, counter, output_path):
-    root = tree.Element("account")
-    for user in accounts:
-        tree.SubElement(root, "user name").text = user.name
-        tree.SubElement(root, "account id").text = user.account_id
-        tree.SubElement(root, "address").text = user.address
-        tree.SubElement(root, "phone number").text = user.phone_number
-    final_tree = tree.ElementTree(root)
 
-    final_tree.write(output_path)
+    doc = minidom.Document()
+    root = doc.createElement('accounts')
+    doc.appendChild(root)
+
+    for user in accounts:
+        account = doc.createElement('account')
+        username = doc.createElement('user name')
+
+        username.appendChild(doc.createTextNode(user.name))
+        account.appendChild(username)
+
+        account_id = doc.createElement('account id')
+        account_id.appendChild(doc.createTextNode(user.account_id))
+        account.appendChild(account_id)
+
+        address = doc.createElement('address')
+        address.appendChild(doc.createTextNode(user.address))
+        account.appendChild(address)
+
+        phone_number = doc.createElement('phone number')
+        phone_number.appendChild(doc.createTextNode(user.phone_number))
+        account.appendChild(phone_number)
+
+        root.appendChild(account)
+
+    doc.writexml(open(output_path, 'w'),
+                 indent=" ",
+                 addindent=" ",
+                 newl = "\n")
 
 
 def read_file_contents(input_file):
