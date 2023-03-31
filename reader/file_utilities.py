@@ -27,13 +27,16 @@ def write_xml_file(accounts, output_path):
             account.appendChild(phone_number)
 
             root.appendChild(account)
+
         except Exception as e:
             print(e)
+            return False
 
     doc.writexml(open(output_path, 'w'),
                  indent=" ",
                  addindent=" ",
                  newl="\n")
+    return True
 
 
 def read_file_contents(input_file):
